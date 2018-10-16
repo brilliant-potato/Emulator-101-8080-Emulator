@@ -10,6 +10,8 @@
 #include<stdlib.h>
 #include<string.h>
 
+#define CMD_BUFSIZE 50
+
 /*
   Struct used by disassemble_number.
 
@@ -28,15 +30,17 @@ typedef struct cmd_opnr_cycles  {
     int allgood;
 } coc;
 
-coc disassemble_number(unsigned char byte) {
+coc disassemble_number(char* hex_buffer) {
     
-    int noo = 1;
     int cycles = 7;
-    char* cmd = "";
-    
-    switch (byte) {
+    int allgood = 1;
+    char *cmd;
+    unsigned char current_byte = *hex_buffer;
+    unsigned char next_byte = *(hex_buffer+1);
+    unsigned char nn_byte  = *(hex_buffer+2);
+    switch (current_byte) {
           
-        case 0b00000000: break;
+        case 0b00000000: cmd = "NOP";cycles = 4; break;
         case 0b00000001: break;
         case 0b00000010: break;
         case 0b00000011: break;
@@ -100,70 +104,79 @@ coc disassemble_number(unsigned char byte) {
         case 0b00111101: break;
         case 0b00111110: break;
         case 0b00111111: break;   
-        case 0b01000000: break;
-        case 0b01000001: break;
-        case 0b01000010: break;
-        case 0b01000011: break;
-        case 0b01000100: break;
-        case 0b01000101: break;
-        case 0b01000110: break;
-        case 0b01000111: break;
-        case 0b01001000: break;
-        case 0b01001001: break;
-        case 0b01001010: break;
-        case 0b01001011: break;
-        case 0b01001100: break;
-        case 0b01001101: break;
-        case 0b01001110: break;
-        case 0b01001111: break;
-        case 0b01010000: break;
-        case 0b01010001: break;
-        case 0b01010010: break;
-        case 0b01010011: break;
-        case 0b01010100: break;   
-        case 0b01010101: break;
-        case 0b01010110: break;
-        case 0b01010111: break;
-        case 0b01011000: break;
-        case 0b01011001: break;
-        case 0b01011010: break;
-        case 0b01011011: break;
-        case 0b01011100: break;
-        case 0b01011101: break;
-        case 0b01011110: break;
-        case 0b01011111: break;
-        case 0b01100000: break;
-        case 0b01100001: break;
-        case 0b01100010: break;
-        case 0b01100011: break;
-        case 0b01100100: break;
-        case 0b01100101: break;
-        case 0b01100110: break;
-        case 0b01100111: break;
-        case 0b01101000: break;
-        case 0b01101001: break;
-        case 0b01101010: break;
-        case 0b01101011: break;
-        case 0b01101100: break;
-        case 0b01101101: break;
-        case 0b01101110: break;
-        case 0b01101111: break;
-        case 0b01110000: break;
-        case 0b01110001: break;
-        case 0b01110010: break;
-        case 0b01110011: break;
-        case 0b01110100: break;
-        case 0b01110101: break;
-        case 0b01110110: break;
-        case 0b01110111: break;
-        case 0b01111000: break;
-        case 0b01111001: break;
-        case 0b01111010: break;
-        case 0b01111011: break;
-        case 0b01111100: break;
-        case 0b01111101: break;
-        case 0b01111110: break;
-        case 0b01111111: break;
+// Start MOV 
+        case 0b01000000: cmd = "MOV\tB,B"; cycles = 5;break;
+        case 0b01000001: cmd = "MOV\tB,C"; cycles = 5;break;
+        case 0b01000010: cmd = "MOV\tB,D"; cycles = 5;break;
+        case 0b01000011: cmd = "MOV\tB,E"; cycles = 5;break;
+        case 0b01000100: cmd = "MOV\tB,H"; cycles = 5;break;
+        case 0b01000101: cmd = "MOV\tB,L"; cycles = 5;break;
+        case 0b01000110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tB,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01000111: cmd = "MOV\tB,A"; cycles = 5;break;
+
+        case 0b01001000: cmd = "MOV\tC,B"; cycles = 5;break; 
+        case 0b01001001: cmd = "MOV\tC,C"; cycles = 5;break; 
+        case 0b01001010: cmd = "MOV\tC,D"; cycles = 5;break; 
+        case 0b01001011: cmd = "MOV\tC,E"; cycles = 5;break; 
+        case 0b01001100: cmd = "MOV\tC,H"; cycles = 5;break; 
+        case 0b01001101: cmd = "MOV\tC,L"; cycles = 5;break; 
+        case 0b01001110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tC,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01001111: cmd = "MOV\tC,A"; cycles = 5;break;                 
+
+        case 0b01010000: cmd = "MOV\tD,B"; cycles = 5;break; 
+        case 0b01010001: cmd = "MOV\tD,C"; cycles = 5;break; 
+        case 0b01010010: cmd = "MOV\tD,D"; cycles = 5;break; 
+        case 0b01010011: cmd = "MOV\tD,E"; cycles = 5;break; 
+        case 0b01010100: cmd = "MOV\tD,H"; cycles = 5;break;                    
+        case 0b01010101: cmd = "MOV\tD,L"; cycles = 5;break; 
+        case 0b01010110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tD,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01010111: cmd = "MOV\tD,A"; cycles = 5;break;                 
+
+        case 0b01011000: cmd = "MOV\tE,B"; cycles = 5;break;
+        case 0b01011001: cmd = "MOV\tE,C"; cycles = 5;break;
+        case 0b01011010: cmd = "MOV\tE,D"; cycles = 5;break;
+        case 0b01011011: cmd = "MOV\tE,E"; cycles = 5;break;
+        case 0b01011100: cmd = "MOV\tE,H"; cycles = 5;break;    
+        case 0b01011101: cmd = "MOV\tE,L"; cycles = 5;break;
+        case 0b01011110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tE,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01011111: cmd = "MOV\tH,A"; cycles = 5;break;                                           
+
+        case 0b01100000: cmd = "MOV\tH,B"; cycles = 5;break;                                           
+        case 0b01100001: cmd = "MOV\tH,C"; cycles = 5;break;                                           
+        case 0b01100010: cmd = "MOV\tH,D"; cycles = 5;break;                                           
+        case 0b01100011: cmd = "MOV\tH,E"; cycles = 5;break;                                           
+        case 0b01100100: cmd = "MOV\tH,H"; cycles = 5;break;                                           
+        case 0b01100101: cmd = "MOV\tH,L"; cycles = 5;break;                                           
+        case 0b01100110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tH,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01100111: cmd = "MOV\tH,A"; cycles = 5;break;
+                 
+        case 0b01101000: cmd = "MOV\tL,B"; cycles = 5;break;                                           
+        case 0b01101001: cmd = "MOV\tL,C"; cycles = 5;break;                                           
+        case 0b01101010: cmd = "MOV\tL,D"; cycles = 5;break;                                           
+        case 0b01101011: cmd = "MOV\tL,E"; cycles = 5;break;                                           
+        case 0b01101100: cmd = "MOV\tL,H"; cycles = 5;break;                    
+        case 0b01101101: cmd = "MOV\tL,L"; cycles = 5;break;                                           
+        case 0b01101110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tL,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01101111: cmd = "MOV\tL,A"; cycles = 5;break;   
+        
+        case 0b01110000: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,B",nn_byte,next_byte); cycles = 5; break; 
+        case 0b01110001: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,C",nn_byte,next_byte); cycles = 5; break;
+        case 0b01110010: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,D",nn_byte,next_byte); cycles = 5; break;
+        case 0b01110011: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,E",nn_byte,next_byte); cycles = 5; break;
+        case 0b01110100: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,G",nn_byte,next_byte); cycles = 5; break;
+        case 0b01110101: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,L",nn_byte,next_byte); cycles = 5; break;
+        case 0b01110110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,$%x%x",nn_byte,next_byte,nn_byte,next_byte); cycles = 5; break;
+        case 0b01110111: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\t$%x%x,A",nn_byte,next_byte); cycles = 5; break;
+        
+        case 0b01111000: cmd = "MOV\tA,B"; cycles = 5;break;    
+        case 0b01111001: cmd = "MOV\tA,C"; cycles = 5;break;    
+        case 0b01111010: cmd = "MOV\tA,D"; cycles = 5;break;    
+        case 0b01111011: cmd = "MOV\tA,E"; cycles = 5;break;    
+        case 0b01111100: cmd = "MOV\tA,H"; cycles = 5;break;    
+        case 0b01111101: cmd = "MOV\tA,L"; cycles = 5;break;    
+        case 0b01111110: cmd = malloc(CMD_BUFSIZE*sizeof(char));snprintf(cmd,CMD_BUFSIZE,"MOV\tA,$%x%x",nn_byte,next_byte); cycles = 5; break;
+        case 0b01111111: cmd = "MOV\tA,A"; cycles = 5;break;   
+// END MOV        
         case 0b10000000: break;
         case 0b10000001: break;
         case 0b10000010: break;
@@ -293,6 +306,7 @@ coc disassemble_number(unsigned char byte) {
         case 0b11111110: break;
         case 0b11111111: break;
 
+    }
 }
 
 
@@ -302,7 +316,7 @@ int main (int argc, char** argv) {
     
     char* test = "HALLO WELT!";
     unsigned char test2 = *test; 
-
-    printf("%c",test2);
+    unsigned char test3 = *(test+1);    
+    printf("%c\t%c\n",test2,test3);
 
 }
